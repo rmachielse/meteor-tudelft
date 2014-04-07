@@ -11,7 +11,7 @@ Package.on_use(function(api){
   api.use('random', 'client');
   api.use('service-configuration', ['client', 'server']);
 
-  api.export('tudelft');
+  api.export('Tudelft');
 
   api.add_files(['tudelft_configure.html', 'tudelft_configure.js'], 'client');
 
