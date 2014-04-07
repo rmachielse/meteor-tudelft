@@ -23,10 +23,8 @@ ServiceConfiguration.configurations.insert
   service: "tudelft",
   clientId: "",
   secret: "",
-  rootUrl: ""
+  rootUrl: "" // useful for local usage
 ```
-
-The rootUrl configuration can be used to override the rootUrl for local usage.
 
 ## Usage
 

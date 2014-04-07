@@ -53,10 +53,13 @@ var getTokenResponse = function (query) {
 
 var getIdentity = function (accessToken) {
     var identity = Tudelft.getStudyProgress(accessToken);
+    if(_.isArray(identity)){
+        identity = _.first(identity);
+    }
 
     return {
-        id: identity.studentnummer,
-        ects: identity.behaalde_punten_examenprogramma,
+        id: parseInt(identity.studentnummer),
+        ects: parseInt(identity.behaalde_punten_basisprogramma),
         study: {
             code: identity.opleiding,
             name: identity.opleiding_naam_en
@@ -69,7 +72,7 @@ var getIdentity = function (accessToken) {
             code: identity.examenprogramma,
             type: identity.examentype_omschrijving_en,
             name: identity.examenprogramma_naam_en,
-            ects: identity.minimum_punten_examenprogramma
+            ects: parseInt(identity.minimum_punten_examenprogramma)
         }
     };
 }
