@@ -1,8 +1,8 @@
 {
   "name": "tudelft",
-  "description": "TU Delft Oauth authentication",
+  "description": "TU Delft API and OAuth authentication",
   "homepage": "https://github.com/rmachielse/meteor-tudelft",
   "author": "Richard Machielse",
   "version": "0.0.1",
-  "git": "https://github.com/rmachielse/meteor-tudelft.git",
+  "git": "https://github.com/rmachielse/meteor-tudelft.git"
 }

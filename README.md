@@ -5,7 +5,13 @@ A Meteor package for the TU Delft API and OAuth authentication using TUDelft Net
 
 For information on how to register a Client Application see http://www.apidoc.tudelft.nl/
 
-# Configuration
+## Installation
+
+```
+mrt add tudelft
+```
+
+## Configuration
 
 The package will automatically ask for configuration the first time you use it.
 You can also set the values manually:
@@ -22,7 +28,7 @@ ServiceConfiguration.configurations.insert
 
 The rootUrl configuration can be used to override the rootUrl for local usage.
 
-# Usage
+## Usage
 
 The package provides the following methods:
 
