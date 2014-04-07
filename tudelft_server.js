@@ -19,12 +19,12 @@ TUDelft.authorize = function (refreshToken, callback) {
     throw new Error("Failed to complete OAuth handshake with TU Delft" + err.message);
   }
 
-  callback();
-
-  return {
+  var result = {
     access_token: response.data.access_token,
     expires_at: (new Date()) + (1000 * response.data.expires_in)
   }
+
+  callback(result);
 };
 
 TUDelft.getStudyProgress = function (accessToken) {
@@ -51,7 +51,7 @@ TUDelft.getStudyResults = function (accessToken) {
     }
 }
 
-TUDelft.getCourse = function (course_code) {
+TUDelft.getCourse = function (courseCode) {
     try {
         return HTTP.get("http://api.tudelft.nl/v0/vakken/" + course_code).vak;
     } catch (err) {
@@ -59,7 +59,7 @@ TUDelft.getCourse = function (course_code) {
     }
 }
 
-TUDelft.getCourseSchedule = function (course_code) {
+TUDelft.getCourseSchedule = function (courseCode) {
     try {
         return HTTP.get("http://api.tudelft.nl/v0/vakroosters/" + course_code).rooster.evenementLijst;
     } catch (err) {
