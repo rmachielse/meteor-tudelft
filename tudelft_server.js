@@ -1,6 +1,31 @@
-TUDelft = {};
+Tudelft = {};
 
-TUDelft.authorize = function (refreshToken, callback) {
+Oauth.registerService('tudelft', 2, null, function(query){
+
+    var response = getTokenResponse(query);
+    var accessToken = response.accessToken;
+    var identity = getIdentity(accessToken);
+
+    var serviceData = {
+        accessToken: accessToken,
+        expiresAt: (+new Date) + (1000 * response.expiresIn)
+    };
+
+    _.extend(serviceData, identity);
+
+    return {
+        serviceData: serviceData,
+        options: {
+            profile: {
+                student_id: identity.id,
+                study_name: identity.study.name
+            }
+        }
+    };
+
+});
+
+var getTokenResponse = function (query) {
   var config = ServiceConfiguration.configurations.findOne({service: 'tudelft'});
   if (!config) throw new ServiceConfiguration.ConfigError("Service not configured");
 
@@ -8,67 +33,26 @@ TUDelft.authorize = function (refreshToken, callback) {
   try {
     response = HTTP.post("https://oauth.tudelft.nl/oauth2/token", {
         params: {
-            code: refreshToken,
+            code: query.code,
             grant_type: "authorization_code",
             client_id: config.clientId,
             client_secret: config.secret,
-            redirect_uri: config.redirectUri
+            redirect_uri: Meteor.absoluteUrl('_oauth/tudelft?close', config.rootUrl ? {rootUrl: config.rootUrl} : {}),
+            state: query.state
         }
     });
   } catch (err) {
     throw new Error("Failed to complete OAuth handshake with TU Delft" + err.message);
   }
 
-  var result = {
-    access_token: response.data.access_token,
-    expires_at: (new Date()) + (1000 * response.data.expires_in)
-  }
-
-  callback(result);
+  return {
+    accessToken: response.data.access_token,
+    expiresIn: response.data.expires_in
+  };
 };
 
-TUDelft.getStudyProgress = function (accessToken) {
-    try {
-        return HTTP.get("http://api.tudelft.nl/v0/studievoortgang", {
-            params: {
-                oauth_token: accessToken
-            }
-        }).getStudievoortgangByStudentnummerResponse.studievoortgang;
-    } catch (err) {
-        throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
-    }
-}
-
-TUDelft.getStudyResults = function (accessToken) {
-    try {
-        return HTTP.get("http://api.tudelft.nl/v0/studieresultaten", {
-            params: {
-                oauth_token: accessToken
-            }
-        }).studieresultaatLijst.studieresultaat;
-    } catch (err) {
-        throw new Error("Failed to fetch studyresults from TU Delft API. " + err.message);
-    }
-}
-
-TUDelft.getCourse = function (courseCode) {
-    try {
-        return HTTP.get("http://api.tudelft.nl/v0/vakken/" + course_code).vak;
-    } catch (err) {
-        throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
-    }
-}
-
-TUDelft.getCourseSchedule = function (courseCode) {
-    try {
-        return HTTP.get("http://api.tudelft.nl/v0/vakroosters/" + course_code).rooster.evenementLijst;
-    } catch (err) {
-        throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
-    }
-}
-
-TUDelft.getIdentity = function (accessToken) {
-    var identity = TUDelft.getStudyProgress(accessToken);
+var getIdentity = function (accessToken) {
+    var identity = Tudelft.getStudyProgress(accessToken);
 
     return {
         id: identity.studentnummer,
@@ -87,5 +71,57 @@ TUDelft.getIdentity = function (accessToken) {
             name: identity.examenprogramma_naam_en,
             ects: identity.minimum_punten_examenprogramma
         }
+    };
+}
+
+Tudelft.retrieveCredential = function(credentialToken) {
+    return Oauth.retrieveCredential(credentialToken);
+};
+
+Tudelft.getStudyProgress = function (accessToken) {
+    try {
+        var response = HTTP.get("http://api.tudelft.nl/v0/studievoortgang", {
+            params: {
+                oauth_token: accessToken
+            }
+        });
+        var data = JSON.parse(response.content);
+        return data.getStudievoortgangByStudentnummerResponse.studievoortgang;
+    } catch (err) {
+        throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
+    }
+}
+
+Tudelft.getStudyResults = function (accessToken) {
+    try {
+        var response = HTTP.get("http://api.tudelft.nl/v0/studieresultaten", {
+            params: {
+                oauth_token: accessToken
+            }
+        });
+        var data = JSON.parse(response.content);
+        return data.studieresultaatLijst.studieresultaat;
+    } catch (err) {
+        throw new Error("Failed to fetch studyresults from TU Delft API. " + err.message);
+    }
+}
+
+Tudelft.getCourse = function (courseCode) {
+    try {
+        var response = HTTP.get("http://api.tudelft.nl/v0/vakken/" + course_code);
+        var data = JSON.parse(response.content);
+        return data.vak;
+    } catch (err) {
+        throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
+    }
+}
+
+Tudelft.getCourseSchedule = function (courseCode) {
+    try {
+        var response = HTTP.get("http://api.tudelft.nl/v0/vakroosters/" + course_code);
+        var data = JSON.parse(response.content);
+        return data.rooster.evenementLijst;
+    } catch (err) {
+        throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
     }
 }
