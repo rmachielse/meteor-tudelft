@@ -3,6 +3,6 @@
   "description": "TU Delft API and OAuth authentication",
   "homepage": "https://github.com/rmachielse/meteor-tudelft",
   "author": "Richard Machielse",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "git": "https://github.com/rmachielse/meteor-tudelft.git"
 }
