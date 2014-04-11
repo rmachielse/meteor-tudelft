@@ -57,7 +57,7 @@ var getIdentity = function (accessToken) {
     }
 
     return {
-        id: parseInt(identity.studentnummer)
+        id: parseInt(identity.studentnummer),
         study: {
             code: identity.opleiding,
             name: identity.opleiding_naam_en
@@ -89,7 +89,7 @@ Tudelft.getStudyProgress = function (accessToken) {
             }
         });
         var data = JSON.parse(response.content);
-        return data.getStudievoortgangByStudentnummerResponse.studievoortgang;
+        return data ? data.getStudievoortgangByStudentnummerResponse.studievoortgang : {};
     } catch (err) {
         throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
     }
@@ -103,7 +103,7 @@ Tudelft.getStudyResults = function (accessToken) {
             }
         });
         var data = JSON.parse(response.content);
-        return data.studieresultaatLijst.studieresultaat;
+        return data ? data.studieresultaatLijst.studieresultaat : {};
     } catch (err) {
         throw new Error("Failed to fetch studyresults from TU Delft API. " + err.message);
     }
@@ -113,7 +113,7 @@ Tudelft.getCourse = function (courseCode) {
     try {
         var response = HTTP.get("http://api.tudelft.nl/v0/vakken/" + courseCode);
         var data = JSON.parse(response.content);
-        return data.vak;
+        return data ? data.vak : {};
     } catch (err) {
         throw new Error("Failed to fetch course from TU Delft API. " + err.message);
     }
@@ -123,7 +123,7 @@ Tudelft.getCourseSchedule = function (courseCode) {
     try {
         var response = HTTP.get("http://api.tudelft.nl/v0/vakroosters/" + courseCode);
         var data = JSON.parse(response.content);
-        return data.rooster.evenementLijst;
+        return data ? data.rooster.evenementLijst : {};
     } catch (err) {
         throw new Error("Failed to fetch course schedule from TU Delft API. " + err.message);
     }
