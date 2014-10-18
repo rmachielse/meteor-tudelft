@@ -8,7 +8,7 @@ For information on how to register a Client Application see http://www.apidoc.tu
 ## Installation
 
 ```
-mrt add tudelft
+meteor add rmachielse:tudelft
 ```
 
 ## Configuration
