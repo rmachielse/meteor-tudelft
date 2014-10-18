@@ -1,10 +1,10 @@
 Package.describe({
   summary: "TU Delft API and Oauth authentication",
-  version: "0.0.6",
+  version: "0.0.7",
   git: "https://github.com/rmachielse/meteor-tudelft.git"
 });
 
-Package.on_use(function(api){
+Package.onUse(function(api){
   api.versionsFrom("METEOR@0.9.0");
   api.use('oauth2', ['client', 'server']);
   api.use('oauth', ['client', 'server']);
@@ -16,8 +16,8 @@ Package.on_use(function(api){
 
   api.export('Tudelft');
 
-  api.add_files(['tudelft_configure.html', 'tudelft_configure.js'], 'client');
+  api.addFiles(['tudelft_configure.html', 'tudelft_configure.js'], 'client');
 
-  api.add_files('tudelft_server.js', 'server');
-  api.add_files('tudelft_client.js', 'client');
+  api.addFiles('tudelft_server.js', 'server');
+  api.addFiles('tudelft_client.js', 'client');
 });
