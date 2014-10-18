@@ -77,8 +77,8 @@ var getIdentity = function (accessToken) {
     };
 }
 
-Tudelft.retrieveCredential = function(credentialToken) {
-    return Oauth.retrieveCredential(credentialToken);
+Tudelft.retrieveCredential = function(credentialToken, credentialSecret) {
+    return Oauth.retrieveCredential(credentialToken, credentialSecret);
 };
 
 Tudelft.getStudyProgress = function (accessToken) {

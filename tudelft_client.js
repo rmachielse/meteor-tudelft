@@ -13,18 +13,21 @@ Tudelft.requestCredential = function (options, credentialRequestCompleteCallback
         return;
     }
     
-    var credentialToken = Random.id();
+    var credentialToken = Random.secret();
+
+    var loginStyle = OAuth._loginStyle('tudelft', config, options);
 
     var loginUrl =
-        'https://oauth.tudelft.nl/oauth2/authorize' +
-        '?client_id=' + config.clientId +
-        '&redirect_uri=' + Meteor.absoluteUrl('_oauth/tudelft?close', config.rootUrl ? {rootUrl: config.rootUrl} : {}) +
+        'https://oauth.tudelft.nl/oauth2/authorize?client_id=' + config.clientId +
+        '&redirect_uri=' + OAuth._redirectUri('tudelft', config) +
         '&response_type=code' + 
-        '&state=' + credentialToken;
+        '&state=' + OAuth._stateParam(loginStyle, credentialToken);
 
-    Oauth.showPopup(
-        loginUrl,
-        _.bind(credentialRequestCompleteCallback, null, credentialToken),
-        {width: 530, height: 500}
-    )
+    OAuth.launchLogin({
+        loginService: "tudelft",
+        loginStyle: loginStyle,
+        loginUrl: loginUrl,
+        credentialRequestCompleteCallback: credentialRequestCompleteCallback,
+        credentialToken: credentialToken
+    });
 };
