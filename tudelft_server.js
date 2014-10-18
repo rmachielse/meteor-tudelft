@@ -39,7 +39,6 @@ var getTokenResponse = function (query) {
             client_secret: OAuth.openSecret(config.secret),
             code: query.code,
             grant_type: "authorization_code"
-            // state: query.state
         }
     });
   } catch (err) {
@@ -91,7 +90,6 @@ Tudelft.getStudyProgress = function (accessToken) {
             }
         });
         var data = JSON.parse(response.content);
-        console.log('studyprogress', data);
         return data ? data.getStudievoortgangByStudentnummerResponse.studievoortgang : {};
     } catch (err) {
         throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
@@ -106,7 +104,6 @@ Tudelft.getStudyResults = function (accessToken) {
             }
         });
         var data = JSON.parse(response.content);
-        console.log('studyresults', data);
         return data ? data.studieresultaatLijst.studieresultaat : {};
     } catch (err) {
         throw new Error("Failed to fetch studyresults from TU Delft API. " + err.message);
