@@ -1,5 +1,7 @@
 Tudelft = {};
 
+var querystring = Npm.require('querystring');
+
 Oauth.registerService('tudelft', 2, null, function(query){
 
     var response = getTokenResponse(query);
@@ -32,12 +34,12 @@ var getTokenResponse = function (query) {
   try {
     response = HTTP.post("https://oauth.tudelft.nl/oauth2/token", {
         params: {
-            code: query.code,
-            grant_type: "authorization_code",
             client_id: config.clientId,
-            client_secret: config.secret,
-            redirect_uri: Meteor.absoluteUrl('_oauth/tudelft?close', config.rootUrl ? {rootUrl: config.rootUrl} : {}),
-            state: query.state
+            redirect_uri: OAuth._redirectUri('tudelft', config),
+            client_secret: OAuth.openSecret(config.secret),
+            code: query.code,
+            grant_type: "authorization_code"
+            // state: query.state
         }
     });
   } catch (err) {
@@ -89,11 +91,12 @@ Tudelft.getStudyProgress = function (accessToken) {
             }
         });
         var data = JSON.parse(response.content);
+        console.log('studyprogress', data);
         return data ? data.getStudievoortgangByStudentnummerResponse.studievoortgang : {};
     } catch (err) {
         throw new Error("Failed to fetch studyprogress from TU Delft API. " + err.message);
     }
-}
+};
 
 Tudelft.getStudyResults = function (accessToken) {
     try {
@@ -103,11 +106,12 @@ Tudelft.getStudyResults = function (accessToken) {
             }
         });
         var data = JSON.parse(response.content);
+        console.log('studyresults', data);
         return data ? data.studieresultaatLijst.studieresultaat : {};
     } catch (err) {
         throw new Error("Failed to fetch studyresults from TU Delft API. " + err.message);
     }
-}
+};
 
 Tudelft.getCourse = function (courseCode) {
     try {
@@ -117,7 +121,7 @@ Tudelft.getCourse = function (courseCode) {
     } catch (err) {
         throw new Error("Failed to fetch course from TU Delft API. " + err.message);
     }
-}
+};
 
 Tudelft.getCourseSchedule = function (courseCode) {
     try {
@@ -127,4 +131,4 @@ Tudelft.getCourseSchedule = function (courseCode) {
     } catch (err) {
         throw new Error("Failed to fetch course schedule from TU Delft API. " + err.message);
     }
-}
+};

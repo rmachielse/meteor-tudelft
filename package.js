@@ -1,6 +1,6 @@
 Package.describe({
   summary: "TU Delft API and Oauth authentication",
-  version: "0.0.8",
+  version: "0.0.9",
   git: "https://github.com/rmachielse/meteor-tudelft.git"
 });
 
